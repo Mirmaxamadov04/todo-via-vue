@@ -1,61 +1,31 @@
 <template>
   <div class="container">
-    <todoAddForm @createTodoItem="createTodoItem" />
-    <todoList
-      :Todos="Todos"
-      @onDelete="onDeleteHandler"
-      @completed="isCompletedHandler"
-    />
+    <todoAddForm />
+    <todoList :Todos="Todos" />
   </div>
 </template>
 
-<script>
+<script setup>
 import todoAddForm from "./components/todo-add-form/todo-add-form.vue";
 import todoList from "./components/todo-list/todo-list.vue";
-export default {
-  components: {
-    todoAddForm,
-    todoList,
-  },
+import { ref, provide, watch } from "vue";
 
-  data() {
-    return {
-      Todos: [
-        {
-          name: "coding",
-          isCompleted: false,
-          id: 1,
-        },
-      ],
-    };
-  },
+const storedTodos = JSON.parse(localStorage.getItem("todos"));
 
-  mounted() {
-    const storedTodos = localStorage.getItem("todos");
-    if (storedTodos) {
-      this.Todos = JSON.parse(storedTodos);
-    }
-  },
-
-  methods: {
-    createTodoItem(item) {
-      this.Todos.push(item);
-      localStorage.setItem("todos", JSON.stringify(this.Todos));
+const Todos = ref(
+  storedTodos || [
+    {
+      id: 1,
+      task: "coding",
+      isCompleted: false,
     },
+  ]
+);
 
-    onDeleteHandler(id) {
-      this.Todos = this.Todos.filter((todo) => todo.id != id);
-      localStorage.setItem("todos", JSON.stringify(this.Todos));
-    },
+function createNewTodo() {
+  localStorage.setItem("todos", JSON.stringify(Todos.value));
+}
 
-    isCompletedHandler(id) {
-      this.Todos.map((todo) => {
-        if (todo.id == id) {
-          todo.isCompleted = !todo.isCompleted;
-        }
-      });
-      localStorage.setItem("todos", JSON.stringify(this.Todos));
-    },
-  },
-};
+provide("Todos", Todos);
+watch(Todos, createNewTodo, { deep: true });
 </script>

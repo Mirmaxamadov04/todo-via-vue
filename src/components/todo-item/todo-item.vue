@@ -2,42 +2,31 @@
   <li
     class="list-group-item d-flex justify-content-between"
     :class="[{ completed: todo.isCompleted }]"
+    :id="todo.id"
   >
-    <span class="list-group-item-label">{{ todo.name }}</span>
+    <span class="list-group-item-label">{{ todo.task }}</span>
     <div class="d-flex justify-content-center align-items-center">
-      <button @click="completed" type="button" class="btn-cookie btn-sm">
+      <button type="button" class="btn-cookie btn-sm" @click="onCompeted">
         <i class="fas fa-cookie"></i>
       </button>
-      <button @click="onDelete" type="button" class="btn-trash btn-sm">
+      <button type="button" class="btn-trash btn-sm" @click="onDelete">
         <i class="fas fa-trash"></i>
       </button>
     </div>
   </li>
 </template>
 
-<script>
-export default {
-  data() {
-    return {};
-  },
+<script setup>
+const props = defineProps(["todo"]);
+const emits = defineEmits(["remove"], ["compeleted"]);
 
-  props: {
-    todo: {
-      type: Object,
-      required: true,
-    },
-  },
+function onDelete() {
+  emits("remove", props.todo.id);
+}
 
-  methods: {
-    onDelete() {
-      this.$emit("onDelete", this.todo.id);
-    },
-
-    completed() {
-      this.$emit("completed", this.todo.id);
-    },
-  },
-};
+function onCompeted() {
+  emits("compeleted", props.todo.id);
+}
 </script>
 
 <style scoped>

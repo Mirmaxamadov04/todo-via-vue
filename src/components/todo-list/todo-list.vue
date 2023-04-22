@@ -3,36 +3,30 @@
     <todoItem
       v-for="todo in Todos"
       :todo="todo"
-      @onDelete="$emit('onDelete', todo.id)"
-      @completed="$emit('completed', todo.id)"
+      :key="todo.id"
+      @remove="onDeleteHandler"
+      @compeleted="onCompletedHandler"
     />
   </ul>
 </template>
 
-<script>
+<script setup>
 import todoItem from "../todo-item/todo-item.vue";
-export default {
-  components: {
-    todoItem,
-  },
-  data() {},
+import { inject } from "vue";
 
-  props: {
-    Todos: {
-      type: Array,
-      required: true,
-    },
-  },
+const Todos = inject("Todos");
 
-  methods: {
-    onDelete() {
-      this.$emit("onDelete", todo.id);
-    },
-    completed() {
-      this.$emit("completed", todo.id);
-    },
-  },
-};
+function onDeleteHandler(id) {
+  Todos.value = Todos.value.filter((todo) => todo.id !== id);
+}
+
+function onCompletedHandler(id) {
+  Todos.value.map((todo) => {
+    if (todo.id == id) {
+      todo.isCompleted = !todo.isCompleted;
+    }
+  });
+}
 </script>
 
 <style>

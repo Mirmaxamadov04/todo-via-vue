@@ -5,34 +5,34 @@
         type="text"
         class="form-control new-movie-label"
         placeholder="enter todo item"
-        :value="name"
-        @input="name = $event.target.value"
+        :value="newTask"
+        @input="newTask = $event.target.value"
       />
-      <button @click="addTodo" class="btn btn-outline-dark">Click</button>
+      <button class="btn btn-outline-dark" @click="addNewTodo">Click</button>
     </form>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      name: "",
-    };
-  },
+<script setup>
+import { ref, inject } from "vue";
 
-  methods: {
-    addTodo() {
-      const newTodo = {
-        name: this.name,
-        isCompleted: false,
-        id: Date.now(),
-      };
-      this.$emit("createTodoItem", newTodo);
-      this.name = "";
-    },
-  },
-};
+const newTask = ref("");
+const Todos = inject("Todos");
+
+function addNewTodo() {
+  if (newTask.value.length == 0) {
+    return false;
+  }
+  const newTodo = {
+    id: Date.now(),
+    task: newTask.value,
+    isCompleted: false,
+  };
+
+  Todos.value.push(newTodo);
+  newTask.value = "";
+  localStorage.setItem("todos", JSON.stringify(Todos.value));
+}
 </script>
 
 <style>
