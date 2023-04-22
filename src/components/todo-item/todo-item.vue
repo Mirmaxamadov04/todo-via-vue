@@ -62,6 +62,7 @@ function onCompeted() {
   font-size: 17px;
   border: none;
   cursor: pointer;
+  background: transparent;
 }
 
 .list-group-item .btn-cookie {
